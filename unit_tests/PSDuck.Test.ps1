@@ -4,7 +4,7 @@ Import-Module PShould
 $parentFolder = Split-Path -Path $PSScriptRoot -Parent
 Import-Module (Join-Path -Path $parentFolder -ChildPath PSDuck.psm1)
 
-Describing 'PSDuck.ps1'{
+Describing 'PSDuck.psm1'{
     TestSetup{
       $required_properties = @('Property1','Property2','Property3','Property4')
     
@@ -15,7 +15,7 @@ Describing 'PSDuck.ps1'{
         TestSetup{
               
               $testObject = New-Object PSObject -Property @{Property1='';Property2='';Property3='';Property4=''}
-              $interface = Confirm-Has_Interface -InputObject $testObject -Contract $required_properties
+              $interface = Confirm-Has_Members -InputObject $testObject -Members $required_properties
     
         }
 
@@ -36,7 +36,7 @@ Describing 'PSDuck.ps1'{
         TestSetup{
               #$required_properties = @('Property1','Property2')
               $testObject = New-Object PSObject -Property @{Property1='';Property3='';Property4=''}
-              $interface = Confirm-Has_Interface -InputObject $testObject -Contract $required_properties
+              $interface = Confirm-Has_Members -InputObject $testObject -Members $required_properties
     
         }
 
@@ -58,7 +58,7 @@ Describing 'PSDuck.ps1'{
   
         TestSetup{             
               $testHashTable =  @{Property1='';Property2='';Property3='';Property4=''}
-              $interface = Confirm-Has_Interface -InputObject $testHashTable -Contract $required_properties
+              $interface = Confirm-Has_Members -InputObject $testHashTable -Members $required_properties
     
         }
 
@@ -78,7 +78,7 @@ Describing 'PSDuck.ps1'{
   
         TestSetup{              
               $testHashTable = @{}
-              $interface = Confirm-Has_Interface -InputObject $testHashTable -Contract $required_properties
+              $interface = Confirm-Has_Members -InputObject $testHashTable -Members $required_properties
     
         }
 
@@ -98,7 +98,7 @@ Describing 'PSDuck.ps1'{
         TestSetup{
               #$required_properties = @('Property1','Property2')
               $testHashTable = @{Property1='';Property4=''}
-              $interface = Confirm-Has_Interface -InputObject $testHashTable -Contract $required_properties
+              $interface = Confirm-Has_Members -InputObject $testHashTable -Members $required_properties
     
         }
 
@@ -114,6 +114,28 @@ Describing 'PSDuck.ps1'{
         }
   
     }  #End Given
+
+    Given 'a hashtable missing two required properties'{
+  
+        TestSetup{
+              #$required_properties = @('Property1','Property2')
+              $testHashTable = @{Property1='';Property4=''}
+              $interface = Confirm-Has_Members -InputObject $testHashTable -Members $required_properties
+    
+        }
+
+        It 'will return false'{
+          $interface.MeetsRequirements | should be $false
+    
+        }
+
+        It 'will list two  missing properties'{
+          $interface.MissingValues.Count | should be -eq 2
+          $interface.MissingValues | should be 'Property2','Property3'
+    
+        }
+  
+    }  #End Given    
 
 
 }  #End Describing
