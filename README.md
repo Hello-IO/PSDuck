@@ -1,4 +1,4 @@
-PSDuck is a simple module that I have created to facilitate duck typing for needed occasions.  
+PSDuck is a simple Powershell module that I have created to facilitate duck typing for needed occasions.  
 
 Tutorial
 ```
