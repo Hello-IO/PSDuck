@@ -1,22 +1,21 @@
 ﻿
 
-Function Confirm-Has_Interface{
-  param([parameter(Mandatory=$true)]$InputObject,[parameter(Mandatory=$true)][System.String[]]$Contract)
+Function Confirm-Has_Members{
+  param([parameter(Mandatory=$true)]$InputObject,[parameter(Mandatory=$true)][System.String[]]$Members)
       
       $obj = @{} 
       $obj.MeetsRequirements = $false
              
       switch($InputObject){         
       { $_ -is [System.Collections.Hashtable]} {$this = $_ 
-                                                $obj.MissingValues = $Contract| %{ if( -not $this.ContainsKey($_) ) {$_}  }                                              
+                                                $obj.MissingValues = $Members| %{ if( -not $this.ContainsKey($_) ) {$_}  }                                              
                                                 break
-                                                }
-      { $_ -is [PSObject]}    { $this = $_ 
+                                                }           
+      default  { $this = $_ 
                                 $properties = $this|Get-Member|Select-Object -ExpandProperty Name
-                                $obj.MissingValues = $Contract| %{ if( -not $properties.Contains($_) ) {$_}  } 
+                                $obj.MissingValues = $Members| %{ if( -not $properties.Contains($_) ) {$_}  } 
                                 break
-                              }     
-      default {throw "-InputObject for 'Assert-Missing_Property function' must by an object or hashtable"}
+                              }
       } #end switch
 
      
