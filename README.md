@@ -1,7 +1,7 @@
 PSDuck is a simple module that I have created to facilitate duck typing for needed occasions.  
 
-#Tutorial:
-
+Tutorial
+```
 #required property the object is to have.
 $required_member = 'myExtensionProperty'
 
@@ -22,3 +22,5 @@ $testString = $testString | Add-Member -MemberType NoteProperty -Name 'myExtensi
 $interface = Confirm-Has_Members -InputObject $testString  -Members $required_member
 Write-Host "TestString meets requirements: $($interface.MeetsRequirements)" -ForegroundColor DarkYellow
 Write-Host "TestString's missing values are $($interface.MissingValues)" -ForegroundColor DarkYellow
+
+```
