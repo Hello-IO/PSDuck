@@ -1,26 +1,40 @@
-PSDuck is a simple Powershell module that I have created to facilitate duck typing for needed occasions.  
+PSDuck is a simple Powershell module that I have created to validate if an object has required members.
+This function works on hashtables too.  
 
 Tutorial
 ```
-#required property the object is to have.
-$required_member = 'myExtensionProperty'
+#Programmer creates three objects.
+$widget_A = New-Object PSObject -Property @{name='Widget A'; cost='4.50'}
 
-#test candidate
-$testString = "hello"
+$widget_B = New-Object PSObject -Property @{name='Widget B'; cost='9.99'}
 
-#confirm if $testString has the 'myExtensionProperty' member.
-$interface = Confirm-Has_Members -InputObject $testString  -Members $required_member
+#Widget C is missing a required 'cost' member that Do-Work function requires to perform work.
+$widget_C = New-Object PSObject -Property @{name='Widget C'}
 
 
-Write-Host "TestString meets requirements: $($interface.MeetsRequirements)" -ForegroundColor DarkYellow
-Write-Host "TestString's missing values are $($interface.MissingValues)" -ForegroundColor DarkYellow
 
-#add the required member.
-$testString = $testString | Add-Member -MemberType NoteProperty -Name 'myExtensionProperty' -Value 'world' -PassThru 
 
-#confirm if $testString has the 'myExtensionProperty' member.
-$interface = Confirm-Has_Members -InputObject $testString  -Members $required_member
-Write-Host "TestString meets requirements: $($interface.MeetsRequirements)" -ForegroundColor DarkYellow
-Write-Host "TestString's missing values are $($interface.MissingValues)" -ForegroundColor DarkYellow
+Function Do-Work{
+    param($Object)
+
+        #Do-Work interface requirements to perform some work.
+        $required_members = @( 'name','cost')
+
+        #Interface will have two usuable members: MeetsRequirements and MissingValues.  
+        #If the interface meets requirements, it will have no missing values list.
+        $interface = Confirm-Has_Members -InputObject $Object -Members $required_members
+
+        if( -not ($interface.MeetsRequirements) ){
+            #throw some error or perform some other logic.
+            Write-Host "$($Object.name) is missing the following properties: $($interface.MissingValues -join ',')" -ForegroundColor Green
+        }
+
+        #... Perform some work
+}
+
+
+Do-Work $widget_A
+Do-Work $widget_B
+Do-Work $widget_C
 
 ```
